@@ -163,8 +163,10 @@ static inline void __wake(volatile void *addr, int cnt, int priv)
 static inline void __futexwait(volatile void *addr, int val, int priv)
 {
 	if (priv) priv = FUTEX_PRIVATE;
+#if !defined(__APPLE__) // blindly following the block for above for __wake
 	__syscall(SYS_futex, addr, FUTEX_WAIT|priv, val, 0) != -ENOSYS ||
 	__syscall(SYS_futex, addr, FUTEX_WAIT, val, 0);
+#endif
 }
 
 void __acquire_ptc(void);
